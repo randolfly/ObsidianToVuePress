@@ -1,0 +1,28 @@
+﻿logConfig: {
+  logFile: 'appLog.log',
+}
+
+dbConfig: {
+  dbFile: 'obsidianFile.db'
+}
+
+fileSelectConfig: {
+  vaultPath: 'C:\Users\randolf\Desktop\testEFM',
+  ignoreRegexes: [
+    '\.obsidian',
+    '\.git',
+    '\.json',
+    '\.html',
+    '\.rar',
+    '\.zip',
+    'EFCore',
+    '\.md',
+  ],
+  destinationPath: 'E:\randolf.blog'
+}
+
+fileParseConfig: {
+  replaceWikiLink: true,
+  replaceAdmontion: true,
+  addYamlInfo: true,
+}
