@@ -12,27 +12,6 @@ namespace ObsidianToVuePress.Lib
     public class DbLib
     {
         /// <summary>
-        /// 添加文件
-        /// </summary>
-        /// <param name="fileInfo">文件信息</param>
-        public static void AddFile(ObsidianFileInfo fileInfo)
-        {
-            using (var ObsidianDb = new ObsidianFileInfoContext())
-            {
-                var dbFileInfos = ObsidianDb.Files
-                    .Where(f => f.Path == fileInfo.Path);
-                if (dbFileInfos.Count() == 0)
-                {
-                    ObsidianDb.Add(fileInfo);
-                    ObsidianDb.SaveChanges();
-                }
-                else
-                {
-                    Log.Debug($"{fileInfo.Path} 不存在!");
-                }
-            }
-        }
-        /// <summary>
         /// 删除filePath对应的地址
         /// </summary>
         /// <param name="filePath">文件相对地址</param>
@@ -58,7 +37,7 @@ namespace ObsidianToVuePress.Lib
         /// 修改文件信息
         /// </summary>
         /// <param name="fileInfo">文件信息</param>
-        /// <returns>返回是否需要更新File=>更新: 1;\n不更新: 0;\n不存在该文件: -1</returns>
+        /// <returns>返回是否需要更新File=>更新: 1; 不更新: 0; 不存在该文件: -1</returns>
         public static int UpdateFile(ObsidianFileInfo fileInfo)
         {
             using (var ObsidianDb = new ObsidianFileInfoContext())

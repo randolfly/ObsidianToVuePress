@@ -7,7 +7,7 @@ dbConfig: {
 }
 
 fileSelectConfig: {
-  vaultPath: 'C:\Users\randolf\Desktop\testEFM',
+  vaultPath: 'C:\Users\rando\Desktop\testEFM',
   ignoreRegexes: [
     '\.obsidian',
     '\.git',
@@ -17,8 +17,10 @@ fileSelectConfig: {
     '\.zip',
     'EFCore',
     '\.md',
+    '\.srt',
+    '\.ass',
   ],
-  destinationPath: 'E:\randolf.blog'
+  destinationPath: 'C:\Users\rando\Desktop\testDest'
 }
 
 fileParseConfig: {
