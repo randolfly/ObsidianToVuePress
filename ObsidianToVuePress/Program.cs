@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 ConfigLogger();
 
+
 AppConfig appConfig = FileLib.ReadAppConfig();
 
 // load and parse file into db set
@@ -77,7 +78,8 @@ foreach (var file in updateFiles)
             .ReplaceMathText()
             .ReplaceAdToVue()
             .ReplaceHtmlTag()
-            .AppendHexoYamlInfo(Path.GetFullPath(file.SrcFile.FullName), appConfig.FileSelectConfig.VaultPath);
+            .AppendHexoYamlInfo(Path.GetFullPath(file.SrcFile.FullName),
+                appConfig.FileSelectConfig.VaultPath, file.SrcFile.Name.Split(".").First());
 
         File.WriteAllText(file.DestPath, newText);
     }

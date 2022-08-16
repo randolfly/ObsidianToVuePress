@@ -28,7 +28,7 @@ namespace ObsidianToVuePress.Lib
 
             foreach (var pattern in patternList)
             {
-                var matches = Regex.Matches(tempText, pattern.Key, RegexOptions.IgnoreCase);
+                //var matches = Regex.Matches(tempText, pattern.Key, RegexOptions.IgnoreCase);
                 MatchEvaluator evaluator = new MatchEvaluator(x => ChangeHtmlTag(x, pattern.Value));
                 finalText = Regex.Replace(tempText, pattern.Key, evaluator);
                 tempText = finalText;
@@ -51,14 +51,43 @@ namespace ObsidianToVuePress.Lib
 
 
         /// <summary>
-        /// 给文件中数学公式上下行增加空格
+        /// 给文件中数学公式上下行增加空格，修改公式颜色设置
         /// </summary>
         /// <param name="fileText">文件信息</param>
         /// <returns>替换完成的文本</returns>
         public static string ReplaceMathText(this string fileText)
         {
             string newText = fileText.Replace("$$", "\n$$\n");
-            return newText;
+
+            // equivalnet bracket search
+            var pattern = @"
+                \{                          # the first {
+                \\color\[RGB\]\{[^{}]+\}    # The func name
+                (?<content>                 # the content
+                    (?:                 
+                    [^\{\}]                 # Match all non-braces
+                    |
+                    (?<open> \{ )           # Match '{', and capture into 'open'
+                    |
+                    (?<-open> \} )          # Match '}', and delete the 'open' capture
+                    )+
+                    (?(open)(?!))           # Fails if 'open' stack isn't empty!
+                )
+                \}                          # Last '}'
+            ";
+            MatchEvaluator evaluator = new MatchEvaluator(ReplaceTeXColor);
+            string newFileText = Regex.Replace(newText, pattern, evaluator, RegexOptions.IgnorePatternWhitespace);
+            return newFileText;
+
+            static string ReplaceTeXColor(Match match)
+            {
+                string content = match.Groups["content"].Value.Trim();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append(@"{\color{red}");
+                stringBuilder.Append(content);
+                stringBuilder.Append("}");
+                return stringBuilder.ToString();
+            }
         }
 
 
@@ -74,13 +103,13 @@ namespace ObsidianToVuePress.Lib
             // ignore http(s): link
             // replace md links first
             string patternMd = @"(?<show>!?)\[(?<name>.*)\]\((?!http)(?<content>.+?)\)";
-            var matches = Regex.Matches(fileText, patternMd, RegexOptions.IgnoreCase);
+            // var matches = Regex.Matches(fileText, patternMd, RegexOptions.IgnoreCase);
             MatchEvaluator evaluator = new MatchEvaluator(x => ChangeWikiLink(x, filePath, destVaultPath));
             string newFileText = Regex.Replace(fileText, patternMd, evaluator);
 
 
             string patternWiki = @"(?<show>!?)\[\[\s*(?<content>[^\|#\^]+?)(?<name>[\|#\^].+?)*?\s*\]\]";
-            matches = Regex.Matches(newFileText, patternWiki, RegexOptions.IgnoreCase);
+            // matches = Regex.Matches(newFileText, patternWiki, RegexOptions.IgnoreCase);
             evaluator = new MatchEvaluator(x => ChangeWikiLink(x, filePath, destVaultPath));
             string finalText = Regex.Replace(newFileText, patternWiki, evaluator);
 
@@ -136,6 +165,9 @@ namespace ObsidianToVuePress.Lib
                             break;
                         case "^":
                             linkFilePath = $"{linkFilePath}{name}";
+                            name = name.Substring(1);
+                            break;
+                        case "|":
                             name = name.Substring(1);
                             break;
                         default:
@@ -235,30 +267,27 @@ namespace ObsidianToVuePress.Lib
         public static string DeleteRawYaml(string fileText)
         {
             string pattern = @"---\s*[\S\s]*?---";
-            var matches = Regex.Matches(fileText, pattern, RegexOptions.IgnoreCase);
-            MatchEvaluator evaluator = new MatchEvaluator(DeleteYaml);
-            string newFileText = Regex.Replace(fileText, pattern, evaluator);
+            Regex rgx = new Regex(pattern); 
+            string newFileText = rgx.Replace(fileText, "", 1);
+            
             return newFileText;
-
-            static string DeleteYaml(Match match)
-            {
-                return "";
-            }
         }
 
         /// <summary>
-        /// 添加文件头部Hexo需要的Yaml信息
+        /// 添加文件头部Hexo需要的Yaml信息, 并添加一级文件名
         /// </summary>
         /// <param name="fileText">需要添加yaml的文本</param>
         /// <param name="filePath">文件路径</param>
         /// <param name="vaultPath">vault的目录</param>
+        /// <param name="fileName">文件名</param>
         /// <returns>添加yaml后的文本</returns>
-        public static string AppendHexoYamlInfo(this string fileText, string filePath, string vaultPath)
+        public static string AppendHexoYamlInfo(this string fileText, string filePath, string vaultPath, string fileName)
         {
             MdYamlHead MdYamlHead = GetMdYamlHead(fileText, filePath, vaultPath);
             StringBuilder stringBuilder = new StringBuilder();
             string yamlHead = MdYamlHead.ToString();
             stringBuilder.Append(yamlHead + "\n");
+            stringBuilder.Append($"# {fileName}\n");
             // 删除原先可能有的yaml头部
             stringBuilder.Append(DeleteRawYaml(fileText));
             return stringBuilder.ToString();
@@ -318,7 +347,7 @@ namespace ObsidianToVuePress.Lib
         {
             //string pattern = @"```ad-(?<head>\w+)\s*((title[:|：]\s*)(?<title>[\w\u4e00-\u9fa5]+))*(?<content>[\s\S]*?)(?<tail>```)";
             string pattern = @"```ad-(?<head>\w+)\s*((title[:|：]\s*)(?<title>[\S ]+))*(?<content>[\s\S]*?)(?<tail>```)";
-            var matches = Regex.Matches(fileText, pattern, RegexOptions.IgnoreCase);
+            // var matches = Regex.Matches(fileText, pattern, RegexOptions.IgnoreCase);
             MatchEvaluator evaluator = new MatchEvaluator(ChangeAdTag);
             string newFileText = Regex.Replace(fileText, pattern, evaluator);
             return newFileText;
@@ -344,53 +373,5 @@ namespace ObsidianToVuePress.Lib
 
         }
 
-        /// <summary>
-        /// 替换文件中的维基link为markdown格式link
-        /// </summary>
-        /// <param name="filePath">替换文本</param>
-        /// <returns>替换完成的文本</returns>
-        //public static string ReplaceWikiLink(this string fileText)
-        //{
-        //    string pattern = @"\[\[\s*(?<content>[^\|]+?)(?<name>\|\S+?)*?\s*\]\]";
-        //    var matches = Regex.Matches(fileText, pattern, RegexOptions.IgnoreCase);
-        //    MatchEvaluator evaluator = new MatchEvaluator(ChangeWikiLink);
-        //    string newFileText = Regex.Replace(fileText, pattern, evaluator);
-        //    return newFileText;
-
-        //    static string ChangeWikiLink(Match match)
-        //    {
-        //        // https://regexr.com/
-        //        string? content = match?.Groups["content"].Value.Trim();
-        //        string? name = match?.Groups["name"].Value.Trim();
-        //        if (string.IsNullOrEmpty(name))
-        //        {
-        //            name = content.Split("/").Last();
-        //        }
-        //        else
-        //        {
-        //            name = name.Substring(1);
-        //        }
-
-        //        StringBuilder stringBuilder = new StringBuilder();
-        //        switch (content?.Substring(0, 1))
-        //        {
-        //            case "@":
-        //                // Obsidian Citations 文件，不做展示
-        //                stringBuilder.Append("[暂时不显示]");
-        //                stringBuilder.Append($"(literature-{content.Replace("@", "")})");
-        //                break;
-        //            case ".":
-        //                stringBuilder.Append($"[{name}]");
-        //                stringBuilder.Append($"({content})");
-        //                break;
-        //            default:
-        //                stringBuilder.Append($"[{name}]");
-        //                stringBuilder.Append($"(./{content})");
-        //                break;
-        //        }
-
-        //        return stringBuilder.ToString();
-        //    }
-        //}
     }
 }
