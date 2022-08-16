@@ -83,9 +83,9 @@ namespace ObsidianToVuePress.Lib
             {
                 string content = match.Groups["content"].Value.Trim();
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append(@"{\color{red}");
+                stringBuilder.Append(@"{\color{red}{");
                 stringBuilder.Append(content);
-                stringBuilder.Append("}");
+                stringBuilder.Append("}}");
                 return stringBuilder.ToString();
             }
         }
