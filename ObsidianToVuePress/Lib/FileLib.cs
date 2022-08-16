@@ -105,7 +105,7 @@ namespace ObsidianToVuePress.Lib
             //return fileLists;
             #endregion
 
-            #region M2: 直接恩搜，循环少但理论上不够好
+            #region APPLIED-M2: 直接恩搜，循环少但理论上不够好
             List<FileInfo>? vaultFiles = vaultRootDir.GetFiles("*.*", System.IO.SearchOption.AllDirectories).ToList();
   
             Log.Debug($"All File Num: {vaultFiles.Count}");
@@ -129,5 +129,6 @@ namespace ObsidianToVuePress.Lib
 
             #endregion
         }
+
     }
 }

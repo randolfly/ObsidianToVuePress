@@ -20,7 +20,7 @@ namespace ObsidianToVuePress.Lib
             using (var ObsidianDb = new ObsidianFileInfoContext())
             {
                 var dbFileInfos = ObsidianDb.Files
-                    .Where(f => f.Path == filePath);
+                    .Where(f => f.SrcPath == filePath);
                 if (dbFileInfos.Count() != 0)
                 {
                     var dbFileInfo = dbFileInfos.First();
@@ -43,7 +43,7 @@ namespace ObsidianToVuePress.Lib
             using (var ObsidianDb = new ObsidianFileInfoContext())
             {
                 var dbFileInfos = ObsidianDb.Files
-                    .Where(f => f.Path == fileInfo.Path);
+                    .Where(f => f.SrcPath == fileInfo.SrcPath);
                 if (dbFileInfos.Count() != 0)
                 {
                     var dbFileInfo = dbFileInfos.First();
@@ -63,8 +63,30 @@ namespace ObsidianToVuePress.Lib
                 {
                     ObsidianDb.Add(fileInfo);
                     ObsidianDb.SaveChanges();
-                    Log.Debug($"{fileInfo.Path} 不存在! 添加了这个文件");
+                    Log.Debug($"{fileInfo.SrcPath} 不存在! 添加了这个文件");
                     return -1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 给定文件名，搜索数据库返回对应文件路径
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <returns>新文件夹下相对路径，如果不存在返回根目录</returns>
+        public static string SearchFile(string fileName)
+        {
+            using (var ObsidianDb = new ObsidianFileInfoContext())
+            {
+                var dbFileInfos = ObsidianDb.Files
+                    .Where(f => f.FileName == fileName);
+                if (dbFileInfos.Count() != 0)
+                {
+                    return dbFileInfos.First().DestPath;
+                }
+                else
+                {
+                    return "/";
                 }
             }
         }

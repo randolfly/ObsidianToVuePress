@@ -40,7 +40,21 @@ namespace ObsidianToVuePress.Shared
         /// The Regex to choose file/folder to ignore
         /// </summary>
         public List<string> IgnoreRegexes { get; set; }
+        
+        public List<ModuleMap> ModuleMaps { get; set; }
+
         public string DestinationPath { get; set; }
+    }
+
+    /// <summary>
+    /// Vault modules to be handle
+    /// </summary>
+    public class ModuleMap
+    {
+        // dir path of vault
+        public string SrcPath { get; set; }
+        // (mapped) dir path in blog
+        public string DestPath { get; set; }
     }
 
     /// <summary>

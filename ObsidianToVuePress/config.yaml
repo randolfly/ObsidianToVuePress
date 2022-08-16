@@ -7,20 +7,51 @@ dbConfig: {
 }
 
 fileSelectConfig: {
-  vaultPath: 'C:\Users\rando\Desktop\testEFM',
+  vaultPath: 'E:\randolf.top',
+  destinationPath: 'E:\randolfly.github.io\docs',
+  moduleMaps: [
+    {
+        srcPath: 'library/数学',
+        destPath: 'math',
+    },
+    {
+        srcPath: 'library/力学',
+        destPath: 'physics',
+    },
+    {
+        srcPath: 'library/机器人',
+        destPath: 'robot',
+    },
+    {
+        srcPath: 'library/控制',
+        destPath: 'control',
+    },
+    {
+        srcPath: 'library/zotero/paper_note',
+        destPath: 'paper',
+    },
+    {
+        srcPath: 'skill',
+        destPath: 'tool',
+    },
+  ],
   ignoreRegexes: [
     '\.obsidian',
+    '\.vs',
     '\.git',
     '\.json',
     '\.html',
     '\.rar',
     '\.zip',
-    'EFCore',
-    '\.md',
-    '\.srt',
-    '\.ass',
+    'ESN',
+    'slprj',
+    '滑模变结构控制MATLAB仿真',
+    '倍福',
+    '伺服电机',
+    'ppt',
+    'pdf-bookmark-1.0.7-win'
   ],
-  destinationPath: 'C:\Users\rando\Desktop\testDest'
+  
 }
 
 fileParseConfig: {
