@@ -267,9 +267,9 @@ namespace ObsidianToVuePress.Lib
         public static string DeleteRawYaml(string fileText)
         {
             string pattern = @"---\s*[\S\s]*?---";
-            Regex rgx = new Regex(pattern); 
+            Regex rgx = new Regex(pattern);
             string newFileText = rgx.Replace(fileText, "", 1);
-            
+
             return newFileText;
         }
 
@@ -318,7 +318,7 @@ namespace ObsidianToVuePress.Lib
 
             sb.Append("\n ## 目录\n");
             // create TOC
-            
+
             var fileList = folder.GetFiles().ToList();
 
             foreach (var file in fileList)
@@ -327,6 +327,7 @@ namespace ObsidianToVuePress.Lib
             }
 
             var subFolderList = folder.GetDirectories().ToList();
+            subFolderList.RemoveAll(x => x.Name == "assets");
 
             foreach (var subFolder in subFolderList)
             {
