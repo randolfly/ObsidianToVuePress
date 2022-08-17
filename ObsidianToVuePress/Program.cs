@@ -113,9 +113,9 @@ foreach (var moduleMap in appConfig.FileSelectConfig.ModuleMaps)
         if (!folder.FullName.Contains("assets"))
         {
             var fileList = folder.GetFiles().ToList();
-            fileList.Find(x => string.Equals(x.Name, "README.md", StringComparison.OrdinalIgnoreCase))?.Delete();
+            fileList.Find(x => string.Equals(x.Name, "README.md", StringComparison.CurrentCultureIgnoreCase))?.Delete();
             // also delete the file with same name of folder
-            fileList.Find(x => string.Equals(x.Name, folder.Name, StringComparison.OrdinalIgnoreCase))?.Delete();
+            fileList.Find(x => string.Equals(x.Name.Split(".").First(), folder.Name, StringComparison.CurrentCultureIgnoreCase))?.Delete();
 
             // add new readme file with fixed contents 
             string readMeText = MdLib.CreateReadMe(folder, appConfig.FileSelectConfig.DestinationPath);

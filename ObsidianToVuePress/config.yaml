@@ -11,19 +11,19 @@ fileSelectConfig: {
   destinationPath: 'E:\randolfly.github.io\docs',
   moduleMaps: [
     {
-        srcPath: 'library/数学',
+        srcPath: 'library/math',
         destPath: 'math',
     },
     {
-        srcPath: 'library/力学',
+        srcPath: 'library/physics',
         destPath: 'physics',
     },
     {
-        srcPath: 'library/机器人',
+        srcPath: 'library/robot',
         destPath: 'robot',
     },
     {
-        srcPath: 'library/控制',
+        srcPath: 'library/control',
         destPath: 'control',
     },
     {
@@ -31,7 +31,7 @@ fileSelectConfig: {
         destPath: 'paper',
     },
     {
-        srcPath: 'skill',
+        srcPath: 'tool',
         destPath: 'tool',
     },
   ],

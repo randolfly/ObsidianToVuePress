@@ -318,11 +318,19 @@ namespace ObsidianToVuePress.Lib
 
             sb.Append("\n ## 目录\n");
             // create TOC
+            
             var fileList = folder.GetFiles().ToList();
 
             foreach (var file in fileList)
             {
                 sb.Append($"- [{file.Name.Split(".").First()}]({file.Name.ReplaceSpace()})\n");
+            }
+
+            var subFolderList = folder.GetDirectories().ToList();
+
+            foreach (var subFolder in subFolderList)
+            {
+                sb.Append($"- [{subFolder.Name}]({subFolder.Name})\n");
             }
 
             return sb.ToString();
