@@ -82,6 +82,7 @@ foreach (var file in updateFiles)
                 appConfig.FileSelectConfig.VaultPath, file.SrcFile.Name.Split(".").First());
 
         File.WriteAllText(file.DestPath, newText);
+        Log.Information($"Modified file: {file.SrcFile.FullName}");
     }
     else
     {

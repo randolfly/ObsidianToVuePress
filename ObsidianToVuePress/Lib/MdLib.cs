@@ -177,11 +177,19 @@ namespace ObsidianToVuePress.Lib
 
                 StringBuilder stringBuilder = new StringBuilder();
 
+                string extensionType = linkFilePath.Split(".").Last();
+                if (extensionType == "pdf")
+                {
+                    // FIXME 这里的<PDF> 组件链接的地址会被重定向到assets，引起bug
+                    // append pdf view
+                    //stringBuilder.Append("<PDF url=\"");
+                    //stringBuilder.Append($"./{linkFilePath.ReplaceSpace().Replace(@"\", "/")}\" />\n");
+                    stringBuilder.Append("!");
+                }
                 // choose display type
                 if (match.Groups["show"].Value.Trim() == "!")
                 {
-                    string extensionType = linkFilePath.Split(".").Last();
-                    if (extensionType == "jpg" || extensionType == "png" || extensionType == "pdf" || extensionType == "jpeg")
+                    if (extensionType == "jpg" || extensionType == "png" | extensionType == "jpeg")
                         stringBuilder.Append("!");
                 }
 
@@ -229,6 +237,22 @@ namespace ObsidianToVuePress.Lib
         }
 
         /// <summary>
+        /// 解析文件star, 决定是否展示在收藏中，数字越大展示越靠前
+        /// </summary>
+        /// <param name="fileText">文件内容</param>
+        /// <returns>解析的star星标度，返回0代表不展示</returns>
+        public static int ParseStar(string fileText)
+        {
+            //string tagPattern = @"tags[:|：]\s*(?:#[\w|\u4e00-\u9fa5]+\s?)+";
+            string tagPattern = @"star[:|：]\s*(?<star>.+)";
+
+            var match = Regex.Match(fileText, tagPattern);
+            string matche = match.Groups["star"].Value.Trim();
+            int star = 0;
+            return int.TryParse(matche, out star) ? star : 0;
+        }
+
+        /// <summary>
         /// 获取文件对应的Yaml信息
         /// </summary>
         /// <param name="fileText">文件内容</param>
@@ -251,11 +275,13 @@ namespace ObsidianToVuePress.Lib
             }
 
             List<string> Tags = ParseTags(fileText);
+            int star = ParseStar(fileText);
 
             yamlHead.Categories = categories;
             yamlHead.Tags = Tags;
             yamlHead.DateTime = dateTime;
-
+            yamlHead.Star = star;
+            yamlHead.Sticky = star;
 
             return yamlHead;
         }

@@ -107,7 +107,7 @@ namespace ObsidianToVuePress.Lib
 
             #region APPLIED-M2: 直接恩搜，循环少但理论上不够好
             List<FileInfo>? vaultFiles = vaultRootDir.GetFiles("*.*", System.IO.SearchOption.AllDirectories).ToList();
-  
+
             Log.Debug($"All File Num: {vaultFiles.Count}");
 
             // config regex builder

@@ -24,6 +24,16 @@ namespace ObsidianToVuePress.Shared
         /// </summary>
         public List<string> Categories { get; set; }
 
+        /// <summary>
+        /// 文件的star程度
+        /// </summary>
+        public int Star { get; set; }
+
+        /// <summary>
+        /// 文件展示在首页的顺序，默认为star数值
+        /// </summary>
+        public int Sticky { get; set; }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -39,6 +49,14 @@ namespace ObsidianToVuePress.Shared
             {
                 sb.Append($"  - {category}\n");
             }
+            if(Star > 0)
+            {
+                sb.Append($"star: {Star}\n");
+            }
+            if(Sticky > 0)
+            {
+                sb.Append($"sticky: {Sticky}\n");
+            }
             sb.Append("---\n");
             return sb.ToString();
         }
@@ -53,6 +71,8 @@ namespace ObsidianToVuePress.Shared
         //categories:
         //  - 从线性映射理解线性代数
         //  - test1
+        //star: 1
+        //sticky: 1
         //---
     }
 }
